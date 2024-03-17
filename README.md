@@ -1,7 +1,6 @@
 # Kernel Flasher
 
-_Forked from [Kernel Flasher](https://github.com/capntrips/KernelFlasher/) and modified
-by [weiishu](https://github.com/tiann)._
+_Forked from [capntrips](https://github.com/capntrips/) and [weiishu](https://github.com/tiann)_
 
 Kernel Flasher is an Android app to flash, backup, and restore kernels.
 
