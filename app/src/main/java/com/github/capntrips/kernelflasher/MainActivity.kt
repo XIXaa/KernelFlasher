@@ -16,6 +16,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -26,6 +27,9 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.github.capntrips.kernelflasher.ui.screens.RefreshableScreen
 import com.github.capntrips.kernelflasher.ui.screens.backups.BackupsContent
 import com.github.capntrips.kernelflasher.ui.screens.backups.SlotBackupsContent
@@ -40,9 +44,6 @@ import com.github.capntrips.kernelflasher.ui.screens.updates.UpdatesChangelogCon
 import com.github.capntrips.kernelflasher.ui.screens.updates.UpdatesContent
 import com.github.capntrips.kernelflasher.ui.screens.updates.UpdatesViewContent
 import com.github.capntrips.kernelflasher.ui.theme.KernelFlasherTheme
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
 import com.topjohnwu.superuser.nio.FileSystemManager
@@ -50,10 +51,11 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 
 
+@ExperimentalAnimationApi
+@ExperimentalMaterialApi
+@ExperimentalMaterial3Api
 @ExperimentalSerializationApi
 @ExperimentalUnitApi
-@ExperimentalMaterial3Api
-@ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
     companion object {
         const val TAG: String = "MainActivity"
@@ -89,6 +91,19 @@ class MainActivity : ComponentActivity() {
     private fun copyAsset(filename: String) {
         val dest = File(filesDir, filename)
         assets.open(filename).use { inputStream ->
+            dest.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        Shell.cmd("chmod +x $dest").exec()
+    }
+
+    private fun copyNativeBinary(filename: String) {
+        val binary = File(applicationInfo.nativeLibraryDir, "lib$filename.so")
+        println("binary: $binary")
+        val dest = File(filesDir, filename)
+        println("dest: $dest")
+        binary.inputStream().use { inputStream ->
             dest.outputStream().use { outputStream ->
                 inputStream.copyTo(outputStream)
             }
@@ -151,9 +166,9 @@ class MainActivity : ComponentActivity() {
     fun onAidlConnected(fileSystemManager: FileSystemManager) {
         try {
             Shell.cmd("cd $filesDir").exec()
-            copyAsset("lptools_static")
-            copyAsset("httools_static")
-            copyAsset("magiskboot") // version: Magisk 25.2 stable release
+            copyNativeBinary("lptools_static") // v20220825
+            copyNativeBinary("httools_static") // v3.2.0
+            copyNativeBinary("magiskboot") // v25.2
             copyAsset("flash_ak3.sh")
         } catch (e: Exception) {
             Log.e(TAG, e.message, e)
@@ -164,7 +179,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            val navController = rememberAnimatedNavController()
+            val navController = rememberNavController()
             viewModel = viewModel {
                 val application = checkNotNull(get(ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY))
                 MainViewModel(application, fileSystemManager, navController)
@@ -200,7 +215,7 @@ class MainActivity : ComponentActivity() {
                             SlotBackupsContent(slotViewModel, backupsViewModel, slotSuffix, navController)
                         }
                     }
-                    AnimatedNavHost(navController = navController, startDestination = "main") {
+                    NavHost(navController = navController, startDestination = "main") {
                         composable("main") {
                             RefreshableScreen(mainViewModel, navController, swipeEnabled = true) {
                                 MainContent(mainViewModel, navController)
