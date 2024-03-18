@@ -4,6 +4,8 @@ _Forked from [capntrips](https://github.com/capntrips/) and [weiishu](https://gi
 
 Kernel Flasher is an Android app to flash, backup, and restore kernels.
 
+This fork version is fixed for KernelSu user and those who failed to flash after ota.
+
 ## Usage
 
 `View` a slot and choose to `Flash` an AK3 zip, `Backup` the kernel related partitions, or `Restore`
