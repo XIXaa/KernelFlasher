@@ -1,4 +1,4 @@
-修改数据目录为"Flash_Backups"以过可疑文件检测
+修改数据目录为"Flash_data"以过可疑文件检测
 
 # Kernel Flasher
 
