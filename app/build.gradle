@@ -9,7 +9,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.github.rimuruchan.kernelflasher"
+        applicationId "com.github.XIXaa.kernelflasher"
         minSdk 29
         targetSdk 34
         versionCode 19
@@ -65,7 +65,7 @@ android {
             useLegacyPackaging true
         }
     }
-    namespace 'com.github.rimuruchan.kernelflasher'
+    namespace 'com.github.XIXaa.kernelflasher'
 }
 
 dependencies {
