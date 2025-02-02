@@ -1,3 +1,5 @@
+修改数据目录为"Flash_Backups"以过可疑文件检测
+
 # Kernel Flasher
 
 _Forked from [capntrips](https://github.com/capntrips/) and [weiishu](https://github.com/tiann)_
