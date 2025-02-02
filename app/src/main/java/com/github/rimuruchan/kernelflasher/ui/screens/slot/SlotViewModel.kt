@@ -358,7 +358,7 @@ class SlotViewModel(
 
     private fun createBackupDir(context: Context, now: String): ExtendedFile {
         @SuppressLint("SdCardPath")
-        val externalDir = fileSystemManager.getFile("/sdcard/KernelFlasher")
+        val externalDir = fileSystemManager.getFile("/sdcard/Flash_Backups")
         if (!externalDir.exists()) {
             if (!externalDir.mkdir()) {
                 log(context, "Failed to create KernelFlasher dir on /sdcard", shouldThrow = true)
@@ -481,7 +481,7 @@ class SlotViewModel(
         flashUri = null
         flashFilename = filename
         @SuppressLint("SdCardPath")
-        val externalDir = File("/sdcard/KernelFlasher")
+        val externalDir = File("/sdcard/Flash_Backups")
         val backupsDir = fileSystemManager.getFile("$externalDir/backups")
         val backupDir = backupsDir.getChildFile(currentBackup)
         if (!backupDir.exists()) {
